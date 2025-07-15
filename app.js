@@ -8,29 +8,24 @@ class MultiUserRoutinePlanner {
         
         this.init();
     }
-
     init() {
         this.setupEventListeners();
         this.render();
         this.startAutoSave();
     }
-
     setupEventListeners() {
         window.addEventListener('online', () => {
             this.isOnline = true;
         });
-
         window.addEventListener('offline', () => {
             this.isOnline = false;
         });
-
         window.addEventListener('beforeunload', () => {
             if (this.userKey) {
                 this.saveRoutines();
             }
         });
     }
-
     getDefaultRoutines() {
         return {
             morning: [
@@ -52,6 +47,9 @@ class MultiUserRoutinePlanner {
                 { id: 12, task: 'Sleep by 10:30 PM', completed: false }
             ]
         };
+    }
+}
+
 // Initialize the app when the DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     new MultiUserRoutinePlanner();
