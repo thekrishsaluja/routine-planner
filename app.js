@@ -5,14 +5,16 @@ class MultiUserRoutinePlanner {
         this.mode = 'login';
         this.saveTimeout = null;
         this.isOnline = navigator.onLine;
-        
+        this.nextId = 13; // Start after default tasks
         this.init();
     }
+
     init() {
         this.setupEventListeners();
         this.render();
         this.startAutoSave();
     }
+
     setupEventListeners() {
         window.addEventListener('online', () => {
             this.isOnline = true;
@@ -26,6 +28,7 @@ class MultiUserRoutinePlanner {
             }
         });
     }
+
     getDefaultRoutines() {
         return {
             morning: [
@@ -47,6 +50,19 @@ class MultiUserRoutinePlanner {
                 { id: 12, task: 'Sleep by 10:30 PM', completed: false }
             ]
         };
+    }
+
+    render() {
+        const app = document.getElementById('app');
+        app.innerHTML = 'Basic app loaded - functionality coming next!';
+    }
+
+    startAutoSave() {
+        console.log('Auto-save started');
+    }
+
+    saveRoutines() {
+        console.log('Routines saved');
     }
 }
 
