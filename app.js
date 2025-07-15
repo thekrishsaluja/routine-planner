@@ -52,3 +52,7 @@ class MultiUserRoutinePlanner {
                 { id: 12, task: 'Sleep by 10:30 PM', completed: false }
             ]
         };
+// Initialize the app when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    new MultiUserRoutinePlanner();
+});
