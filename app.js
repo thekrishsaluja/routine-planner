@@ -199,6 +199,8 @@ class MultiUserRoutinePlanner {
         // Task checkboxes
         app.addEventListener('click', (e) => {
             if (e.target.closest('.task-checkbox')) {
+                e.preventDefault();
+                e.stopPropagation();
                 const taskId = parseInt(e.target.closest('.task-checkbox').dataset.taskId);
                 this.toggleTask(taskId);
             }
@@ -207,6 +209,8 @@ class MultiUserRoutinePlanner {
         // Delete buttons
         app.addEventListener('click', (e) => {
             if (e.target.closest('.task-delete')) {
+                e.preventDefault();
+                e.stopPropagation();
                 const taskId = parseInt(e.target.closest('.task-delete').dataset.taskId);
                 const period = e.target.closest('.task-delete').dataset.period;
                 this.deleteTask(taskId, period);
@@ -216,9 +220,11 @@ class MultiUserRoutinePlanner {
         // Add task buttons
         app.addEventListener('click', (e) => {
             if (e.target.closest('.add-btn')) {
+                e.preventDefault();
+                e.stopPropagation();
                 const period = e.target.closest('.add-btn').dataset.period;
-                const input = document.querySelector(`input[data-period="${period}"]`);
-                if (input.value.trim()) {
+                const input = app.querySelector(`input[data-period="${period}"]`);
+                if (input && input.value.trim()) {
                     this.addTask(period, input.value.trim());
                     input.value = '';
                 }
@@ -228,6 +234,7 @@ class MultiUserRoutinePlanner {
         // Enter key for adding tasks
         app.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && e.target.classList.contains('task-input')) {
+                e.preventDefault();
                 const period = e.target.dataset.period;
                 if (e.target.value.trim()) {
                     this.addTask(period, e.target.value.trim());
@@ -256,7 +263,8 @@ class MultiUserRoutinePlanner {
         keyInput.value = newKey;
         this.userKey = newKey;
         this.mode = 'planner';
-        this.render();
+        // Don't call render() immediately - let loadUserData handle it
+        this.loadUserData();
     }
 
     toggleTask(taskId) {
@@ -264,7 +272,7 @@ class MultiUserRoutinePlanner {
             const task = this.routines[period].find(t => t.id === taskId);
             if (task) {
                 task.completed = !task.completed;
-                this.render();
+                this.updateUI();
                 this.scheduleAutoSave();
                 break;
             }
@@ -278,14 +286,38 @@ class MultiUserRoutinePlanner {
             completed: false
         };
         this.routines[period].push(newTask);
-        this.render();
+        this.updateUI();
         this.scheduleAutoSave();
     }
 
     deleteTask(taskId, period) {
         this.routines[period] = this.routines[period].filter(task => task.id !== taskId);
-        this.render();
+        this.updateUI();
         this.scheduleAutoSave();
+    }
+
+    // New method to update UI without full re-render
+    updateUI() {
+        // Update progress
+        const totalTasks = this.getTotalTasks();
+        const completedTasks = this.getCompletedTasks();
+        const progressPercentage = Math.round((completedTasks / totalTasks) * 100) || 0;
+        
+        const progressStats = document.querySelector('.progress-stats');
+        const progressFill = document.querySelector('.progress-fill');
+        const progressPercentageEl = document.querySelector('.progress-percentage');
+        
+        if (progressStats) progressStats.textContent = `${completedTasks} of ${totalTasks} tasks completed`;
+        if (progressFill) progressFill.style.width = `${progressPercentage}%`;
+        if (progressPercentageEl) progressPercentageEl.textContent = `${progressPercentage}%`;
+
+        // Update task lists
+        ['morning', 'afternoon', 'evening'].forEach(period => {
+            const tasksList = document.querySelector(`.${period} .tasks-list`);
+            if (tasksList) {
+                tasksList.innerHTML = this.routines[period].map(task => this.renderTask(task, period)).join('');
+            }
+        });
     }
 
     getTotalTasks() {
@@ -300,7 +332,8 @@ class MultiUserRoutinePlanner {
     async loadUserData() {
         try {
             if (window.supabase && this.isOnline) {
-                const data = await window.supabase.select('routines', `?user_key=eq.${this.userKey}`);
+                // Fixed: use correct table name
+                const data = await window.supabase.select('user_routines', `?user_key=eq.${this.userKey}`);
                 if (data && data.length > 0) {
                     this.routines = JSON.parse(data[0].routines_data);
                     this.nextId = Math.max(...Object.values(this.routines).flat().map(t => t.id)) + 1;
@@ -323,12 +356,13 @@ class MultiUserRoutinePlanner {
             };
 
             if (window.supabase && this.isOnline) {
-                const existing = await window.supabase.select('routines', `?user_key=eq.${this.userKey}`);
+                // Fixed: use correct table name
+                const existing = await window.supabase.select('user_routines', `?user_key=eq.${this.userKey}`);
                 
                 if (existing && existing.length > 0) {
-                    await window.supabase.update('routines', routineData, `?user_key=eq.${this.userKey}`);
+                    await window.supabase.update('user_routines', routineData, `?user_key=eq.${this.userKey}`);
                 } else {
-                    await window.supabase.insert('routines', routineData);
+                    await window.supabase.insert('user_routines', routineData);
                 }
             }
         } catch (error) {
