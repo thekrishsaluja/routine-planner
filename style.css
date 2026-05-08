@@ -281,6 +281,31 @@ body {
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
+/* ===== STREAK BAR ===== */
+.streak-bar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-top: 4px;
+}
+
+.streak-bar span {
+    background: #f3f4f6;
+    padding: 8px 14px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.streak-bar .streak-best {
+    opacity: 0.7;
+}
+
 /* ===== PERIODS GRID ===== */
 .periods-grid {
     display: grid;
@@ -346,34 +371,18 @@ body {
     background: rgba(255, 255, 255, 0.3);
 }
 
-.morning .period-header i {
-    color: #ca8a04;
-}
-
-.afternoon .period-header i {
-    color: #ea580c;
-}
-
-.evening .period-header i {
-    color: #9333ea;
-}
+.morning .period-header i { color: #ca8a04; }
+.afternoon .period-header i { color: #ea580c; }
+.evening .period-header i { color: #9333ea; }
 
 .period-title {
     font-size: 24px;
     font-weight: 800;
 }
 
-.morning .period-title {
-    color: #ca8a04;
-}
-
-.afternoon .period-title {
-    color: #ea580c;
-}
-
-.evening .period-title {
-    color: #9333ea;
-}
+.morning .period-title { color: #ca8a04; }
+.afternoon .period-title { color: #ea580c; }
+.evening .period-title { color: #9333ea; }
 
 /* ===== TASKS STYLES ===== */
 .tasks-list {
@@ -518,6 +527,59 @@ body {
     font-weight: bold;
 }
 
+/* ===== NOTES SECTION ===== */
+.notes-section {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    margin-top: 24px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f3f4f6;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.notes-section h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.notes-section h3 i {
+    color: #a855f7;
+}
+
+#notesArea {
+    width: 100%;
+    min-height: 120px;
+    padding: 14px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: inherit;
+    color: #374151;
+    resize: vertical;
+    transition: all 0.2s ease;
+    background: #f9fafb;
+    margin-bottom: 12px;
+    display: block;
+}
+
+#notesArea:focus {
+    outline: none;
+    border-color: #a855f7;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+    background: white;
+}
+
+#notesArea::placeholder {
+    color: #9ca3af;
+}
+
 /* ===== BUTTON STYLES ===== */
 .btn {
     background: linear-gradient(135deg, #a855f7, #9333ea);
@@ -540,6 +602,11 @@ body {
     background: linear-gradient(135deg, #9333ea, #7c3aed);
     transform: translateY(-1px);
     box-shadow: 0 6px 16px rgba(168, 85, 247, 0.4);
+}
+
+.btn.btn-sm {
+    padding: 8px 14px;
+    font-size: 14px;
 }
 
 .btn.btn-success {
@@ -589,65 +656,73 @@ body {
     .container {
         padding: 16px;
     }
-    
+
     .planner-header {
         padding: 24px 20px;
     }
-    
+
     .header-top {
         flex-direction: column;
         align-items: stretch;
         gap: 16px;
         text-align: center;
     }
-    
+
     .header-top h1 {
         font-size: 28px;
         justify-content: center;
     }
-    
+
     .header-controls {
         justify-content: center;
         flex-wrap: wrap;
     }
-    
+
     .progress-card {
         flex-direction: column;
         gap: 16px;
         text-align: center;
     }
-    
+
     .progress-percentage {
         font-size: 36px;
     }
-    
+
     .periods-grid {
         grid-template-columns: 1fr;
         gap: 20px;
     }
-    
+
     .period-card {
         padding: 24px 20px;
         max-width: none;
     }
-    
+
     .task-item {
         padding: 14px;
         gap: 12px;
     }
-    
+
     .auth-card {
         padding: 32px 24px;
         margin: 0 16px;
     }
-    
+
     .auth-card h1 {
         font-size: 28px;
     }
-    
+
     .key-input {
         font-size: 16px;
         letter-spacing: 2px;
+    }
+
+    .streak-bar {
+        gap: 8px;
+    }
+
+    .notes-section {
+        padding: 20px;
     }
 }
 
@@ -657,13 +732,13 @@ body {
 }
 
 @keyframes fadeIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(20px); 
+    from {
+        opacity: 0;
+        transform: translateY(20px);
     }
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
